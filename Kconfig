@@ -1,0 +1,33 @@
+config ZMK_STUDIO_LIVE_STATE
+    bool "Send the active layers and key presses as ZMK Studio notifications (live state)"
+    default y
+    depends on ZMK_STUDIO_RPC
+
+if ZMK_STUDIO_LIVE_STATE
+
+config ZMK_STUDIO_LIVE_STATE_KEY_POSITIONS
+    bool "Also send key press / release positions"
+    default y
+
+config ZMK_STUDIO_LIVE_STATE_SENSORS
+    bool "Also send sensor (encoder) rotations"
+    default y
+
+config ZMK_STUDIO_LIVE_STATE_QUEUE_SIZE
+    int "Number of queued notifications (dropped when full)"
+    default 32
+
+# Must fit the largest notification and stay below ZMK_STUDIO_RPC_TX_BUF_SIZE (default 64).
+config ZMK_STUDIO_LIVE_STATE_MIN_TX_SPACE
+    int "Free bytes required in the Studio TX buffer before sending (dropped otherwise)"
+    default 48
+
+config ZMK_STUDIO_LIVE_STATE_TIMEOUT_SECONDS
+    int "Stop sending when the host has not refreshed for this many seconds"
+    default 15
+
+config ZMK_STUDIO_LIVE_STATE_THREAD_STACK_SIZE
+    int "Stack size of the sending thread"
+    default 3072
+
+endif

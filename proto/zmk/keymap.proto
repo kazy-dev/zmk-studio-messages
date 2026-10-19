@@ -16,6 +16,9 @@ message Request {
         RemoveLayerRequest remove_layer = 10;
         RestoreLayerRequest restore_layer = 11;
         SetLayerPropsRequest set_layer_props = 12;
+        // true: start (or keep) sending live_state_changed; false: stop.
+        // 200 keeps clear of upstream numbers (ZMK stores the number as uint8_t).
+        bool set_live_updates = 200;
     }
 }
 
@@ -33,13 +36,29 @@ message Response {
         RemoveLayerResponse remove_layer = 10;
         RestoreLayerResponse restore_layer = 11;
         SetLayerPropsResponse set_layer_props = 12;
+        bool set_live_updates = 200;
     }
 }
 
 message Notification {
     oneof notification_type {
         bool unsaved_changes_status_changed = 1;
+        LiveState live_state_changed = 200;
     }
+}
+
+// Sent on layer changes, key presses/releases and sensor rotations while live updates are on.
+message LiveState {
+    uint32 active_layer_ids = 1;     // bit n = layer ID n is active
+    uint32 highest_layer_index = 2;  // zmk_keymap_highest_layer_active()
+    bool has_position = 3;           // false: layer change only
+    uint32 position = 4;
+    bool pressed = 5;
+    uint32 default_layer_id = 6;
+    repeated uint32 pressed_positions = 7;  // all keys held now
+    bool has_sensor = 8;             // true: a sensor (encoder) was rotated
+    uint32 sensor_index = 9;         // index in zmk,keymap-sensors
+    bool sensor_clockwise = 10;
 }
 
 message SaveChangesResponse {

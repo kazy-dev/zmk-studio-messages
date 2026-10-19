@@ -1,1 +1,4 @@
 name: zmk-studio-messages
+build:
+  cmake: .
+  kconfig: Kconfig
